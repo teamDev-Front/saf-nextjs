@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  is_admin  Boolean   @default(false)
+  createdAt DateTime  @default(now()) @map("created_at")
+  comments  Comment[]
+
+  @@map("users")
+}
+
+model Event {
+  id          Int       @id @default(autoincrement())
+  title       String
+  date        DateTime
+  time        String?
+  location    String
+  description String?   @db.Text
+  image_path  String?
+  details     String?   @db.Text
+  createdAt   DateTime  @default(now()) @map("created_at")
+  comments    Comment[]
+
+  @@map("events")
+}
+
+model Comment {
+  id          Int       @id @default(autoincrement())
+  comment     String    @db.Text
+  is_question Boolean   @default(false)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int       @map("user_id")
+  event       Event     @relation(fields: [eventId], references: [id])
+  eventId     Int       @map("event_id")
+  parent      Comment?  @relation("CommentToComment", fields: [parentId], references: [id])
+  parentId    Int?      @map("parent_id")
+  replies     Comment[] @relation("CommentToComment")
+
+  @@map("comments")
+}

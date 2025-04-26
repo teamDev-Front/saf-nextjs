@@ -1,33 +1,75 @@
+/* app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  /* Primary Colors */
+  --main-1: #AF5C50;    /* main+1 */
+  --main-0: #840000;    /* main-0 */
+  --main--1: #600000;   /* main-1 */
+  --main--2: #4F0000;   /* main-2 */
+
+  /* Neutral Colors */
+  --white: #FFFFFF;     /* white */
+  --grey-2: #F5F7F9;    /* grey+2 */
+  --grey-1: #D2D7DC;    /* grey+1 */
+  --grey-0: #9EA8B3;    /* grey-0 */
+  --grey--1: #2A2A2A;   /* grey-1 */
+  --black: #0A0101;     /* black */
+
+  /* Warning Color */
+  --red: #C5343A;       /* red */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+/* Custom classes using the Tailwind @layer feature */
+@layer components {
+  .btn {
+    @apply inline-flex items-center py-3 px-6 rounded font-semibold text-base transition-all;
+  }
+  
+  .btn-primary {
+    @apply bg-[#840000] text-white hover:bg-[#600000];
+  }
+  
+  .btn-outline {
+    @apply border border-white text-white bg-opacity-20 hover:bg-opacity-30;
+  }
+  
+  .hero {
+    @apply min-h-screen flex flex-col items-center justify-center text-center gap-16 px-6 sm:px-20 lg:px-40;
+  }
+  
+  .hero-large {
+    @apply text-4xl md:text-5xl lg:text-[112px] font-bold leading-tight tracking-tight text-white;
+  }
+  
+  .hero-medium {
+    @apply text-3xl md:text-4xl lg:text-6xl font-bold leading-tight tracking-tight text-white mb-8;
+  }
+  
+  .section-padding {
+    @apply py-16 md:py-24 lg:py-32 px-6 sm:px-8 lg:px-40;
   }
 }
 
+/* Base styles */
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  @apply bg-[#0A0101] text-[#D2D7DC];
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+h1 {
+  @apply text-4xl md:text-5xl lg:text-[112px] font-bold leading-tight tracking-tight text-white;
+}
+
+h2 {
+  @apply text-3xl md:text-4xl lg:text-6xl font-bold leading-tight tracking-tight text-white mb-8;
+}
+
+h3 {
+  @apply text-2xl font-semibold text-white mb-4;
+}
+
+p {
+  @apply text-base md:text-lg lg:text-xl;
 }

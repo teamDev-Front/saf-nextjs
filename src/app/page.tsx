@@ -1,113 +1,175 @@
-import Image from "next/image";
+// app/page.tsx
+"use client";
+
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  });
+
+  useEffect(() => {
+    const eventDate = new Date('2025-04-26T12:30:00');
+
+    const updateCountdown = () => {
+      const now = new Date();
+      const distance = eventDate.getTime() - now.getTime();
+
+      if (distance < 0) {
+        // O evento já começou
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+
+      setTimeLeft({
+        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((distance % (1000 * 60)) / 1000)
+      });
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+    <>
+      <section className="hero hero-home bg-[url('/assets/backgrounds/bg-home-triple-x-armwrestling.png')] bg-cover bg-no-repeat">
+        <div className="hero-content">
+          <h1 className="hero-large">Swiss Armsport Federation</h1>
+          <p className="text-xl">Der offizielle Schweizer Armwrestling-Verband. Unser nächstes Event startet in</p>
+        </div>
+        
+        <div className="countdown flex gap-1 md:gap-4">
+          <div className="countdown-item w-20 md:w-48 p-2 md:p-8 bg-black bg-opacity-60 border-4 border-white flex flex-col items-center">
+            <span className="countdown-number text-3xl md:text-6xl font-bold text-white">{timeLeft.days.toString().padStart(2, '0')}</span>
+            <span className="countdown-label text-base md:text-xl font-semibold text-white">Tagen</span>
+          </div>
+          <div className="countdown-item w-20 md:w-48 p-2 md:p-8 bg-black bg-opacity-60 border-4 border-white flex flex-col items-center">
+            <span className="countdown-number text-3xl md:text-6xl font-bold text-white">{timeLeft.hours.toString().padStart(2, '0')}</span>
+            <span className="countdown-label text-base md:text-xl font-semibold text-white">Stunden</span>
+          </div>
+          <div className="countdown-item w-20 md:w-48 p-2 md:p-8 bg-black bg-opacity-60 border-4 border-white flex flex-col items-center">
+            <span className="countdown-number text-3xl md:text-6xl font-bold text-white">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+            <span className="countdown-label text-base md:text-xl font-semibold text-white">Minuten</span>
+          </div>
+          <div className="countdown-item w-20 md:w-48 p-2 md:p-8 bg-black bg-opacity-60 border-4 border-white flex flex-col items-center">
+            <span className="countdown-number text-3xl md:text-6xl font-bold text-white">{timeLeft.seconds.toString().padStart(2, '0')}</span>
+            <span className="countdown-label text-base md:text-xl font-semibold text-white">Sekunden</span>
+          </div>
+        </div>
+        
+        <div className="hero-buttons flex flex-col md:flex-row gap-6 items-center">
+          <Link href="/events" className="btn btn-outline">
+            <Image src="/assets/icons/i-arrow-right.svg" alt="arrow right" width={20} height={20} className="mr-2" />
+            Zum Event
+          </Link>
+          <Image src="/assets/logos/logo-x-triple.svg" alt="Event logo" className="h-12 md:h-16" width={120} height={60} />
+        </div>
+      </section>
+
+      <section className="mission section-padding">
+        <div className="mission-content max-w-4xl">
+          <h2>Unsere Mission</h2>
+          <p className="mb-8">
+            Die Swiss Armsport Federation fördert und entwickelt Armwrestling in der Schweiz. Wir vereinen Athleten,
+            Vereine und Fans, um den Sport auf nationaler und internationaler Ebene voranzubringen. Durch Turniere,
+            Training und Gemeinschaft stärken wir die Werte von Fairness, Respekt und sportlicher Exzellenz.
+          </p>
+          <div className="mission-buttons flex flex-col md:flex-row gap-4">
+            <Link href="/uber-uns" className="btn btn-primary">Über uns</Link>
+            <Link href="/vereine" className="btn btn-outline">Vereine</Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="swiss-open pt-[80vh] px-6 sm:px-20 lg:px-40 pb-0 bg-[url('/assets/backgrounds/bg-swiss-armwrestling-open-2024.png')] bg-cover bg-no-repeat min-h-screen">
+        <div className="swiss-open-content flex justify-between items-center">
+          <h2>Swiss Open 2024</h2>
+          <Link href="/events" className="btn btn-primary">Nächstes Event</Link>
+        </div>
+      </section>
+
+      <section className="about-sport section-padding">
+        <div className="about-content flex flex-col lg:flex-row gap-16">
+          <div className="text-content flex-1">
+            <h2>Power. Technik. Intelligenz.</h2>
+            <p className="mb-4">
+              Armwrestling ist mehr als nur ein Test der Kraft – es ist ein faszinierender Sport, der Technik,
+              Ausdauer und mentale Stärke vereint. Zwei Gegner treten sich gegenüber und versuchen, den Arm des
+              anderen auf die Unterlage zu drücken. Dabei spielen nicht nur Muskelkraft, sondern auch Taktik,
+              Geschwindigkeit und der richtige Einsatz des Körpers eine entscheidende Rolle.
+            </p>
+            <p className="mb-8">
+              Als Wettkampfsport hat Armwrestling klare Regeln, etablierte Techniken und eine leidenschaftliche
+              Community. Egal ob Hobby-Athlet oder Profi – der Sport ist für alle zugänglich, die ihre Stärke und
+              Fähigkeiten auf die Probe stellen möchten.
+            </p>
+            <Link href="/armwrestling" className="btn btn-primary">Mehr erfahren</Link>
+          </div>
+          <div className="image-content">
+            <Image 
+              src="/assets/images/armwrestling-demonstration-x-triple-fitness.png" 
+              alt="Armwrestling demonstration" 
+              width={460} 
+              height={600} 
+              className="w-full max-w-[460px] h-auto"
             />
+          </div>
+        </div>
+      </section>
+
+      <section className="sponsors section-padding bg-[url('/assets/backgrounds/bg-partners-saf-swiss-armwrestling-x-triple-fitness.png')] bg-cover bg-no-repeat text-center">
+        <div className="sponsors-content">
+          <h2>CHOICE OF CHAMPIONS</h2>
+          <p className="mb-6">Unser Partner für Supplements:</p>
+          <Image 
+            src="/assets/logos/logo-x-triple.svg" 
+            alt="Sponsor logo" 
+            width={404} 
+            height={100} 
+            className="max-w-[404px] h-auto mx-auto my-8"
+          />
+          <a href="https://xfitnessshop.ch" target="_blank" rel="noopener noreferrer" className="btn btn-outline inline-flex">
+            <Image src="/assets/icons/i-arrow-right.svg" alt="arrow right" width={20} height={20} className="mr-2" />
+            Zum Webshop
           </a>
         </div>
-      </div>
+      </section>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
+      <section className="contact section-padding" id="contact">
+        <div className="contact-content max-w-4xl">
+          <h2>Kontakt</h2>
+          <p className="mb-8">
+            Hast du Fragen zum Armwrestling, möchtest du an einem Turnier teilnehmen oder brauchst mehr Informationen
+            zur Swiss Armsport Federation?
           </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+          <div className="contact-info flex flex-col md:flex-row gap-8">
+            <div className="contact-item flex-1">
+              <div className="icon-label flex items-center gap-2 mb-4">
+                <Image src="/assets/icons/i-mail.svg" alt="Mail" width={20} height={20} />
+                <span>Email</span>
+              </div>
+              <p>info@saf.ch</p>
+            </div>
+            <div className="contact-item flex-1">
+              <div className="icon-label flex items-center gap-2 mb-4">
+                <Image src="/assets/icons/i-phone.svg" alt="Phone" width={20} height={20} />
+                <span>Telefon / WhatsApp</span>
+              </div>
+              <p>078 000 00 00</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
