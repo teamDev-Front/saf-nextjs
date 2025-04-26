@@ -24,9 +24,8 @@ export default function Register() {
   };
 
   const validatePassword = (password: string) => {
-    // Mínimo 8 caracteres, pelo menos uma letra maiúscula, uma minúscula e um número
-    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-    return re.test(password);
+    // Mínimo 8 caracteres
+    return password.length >= 8;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

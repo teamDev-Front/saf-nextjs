@@ -24,6 +24,7 @@ interface CommentWithUser {
     replies: CommentWithUser[];
 }
 
+
 export async function GET(req: NextRequest, { params }: RouteParams) {
     try {
         const eventId = params.eventId;
@@ -48,6 +49,16 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
                                 name: true,
                             },
                         },
+                        replies: {
+                            include: {
+                                user: {
+                                    select: {
+                                        id: true,
+                                        name: true,
+                                    },
+                                },
+                            },
+                        },
                     },
                     orderBy: {
                         createdAt: 'asc',
@@ -59,8 +70,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
             },
         });
 
-        // Formatar os comentários para o formato esperado pelo frontend
-        const formattedComments = comments.map((comment: CommentWithUser) => ({
+        const formattedComments = comments.map((comment: any) => ({
             id: comment.id,
             event_id: comment.eventId,
             user_id: comment.userId,
@@ -68,7 +78,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
             comment: comment.comment,
             is_question: comment.is_question,
             created_at: comment.createdAt,
-            replies: comment.replies.map((reply: CommentWithUser) => ({
+            replies: comment.replies.map((reply: any) => ({
                 id: reply.id,
                 event_id: reply.eventId,
                 user_id: reply.userId,
@@ -76,7 +86,17 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
                 comment: reply.comment,
                 is_question: reply.is_question,
                 created_at: reply.createdAt,
-                parent_id: reply.parentId
+                parent_id: reply.parentId,
+                replies: reply.replies.map((nestedReply: any) => ({
+                    id: nestedReply.id,
+                    event_id: nestedReply.eventId,
+                    user_id: nestedReply.userId,
+                    user_name: nestedReply.user.name,
+                    comment: nestedReply.comment,
+                    is_question: nestedReply.is_question,
+                    created_at: nestedReply.createdAt,
+                    parent_id: nestedReply.parentId
+                }))
             }))
         }));
 
