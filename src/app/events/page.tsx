@@ -58,8 +58,8 @@ export default function Events() {
     }, []);
 
     // Funções utilitárias de formatação (semelhantes à versão HTML)
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
+    const formatDate = (dateInput: string | Date) => {
+        const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
         return date.toLocaleDateString('de-DE', {
             day: '2-digit',
             month: '2-digit',
@@ -67,13 +67,13 @@ export default function Events() {
         });
     };
 
-    const getMonthName = (dateString: string) => {
-        const date = new Date(dateString);
+    const getMonthName = (dateInput: string | Date) => {
+        const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
         return date.toLocaleDateString('de-DE', { month: 'short' });
     };
-
-    const getDay = (dateString: string) => {
-        const date = new Date(dateString);
+    
+    const getDay = (dateInput: string | Date) => {
+        const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
         return date.getDate();
     };
 
