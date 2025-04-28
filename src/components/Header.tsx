@@ -43,7 +43,7 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 w-full z-50 bg-black bg-opacity-90 backdrop-blur-sm">
-      <nav className="flex justify-between items-center px-4 py-4 md:px-6 lg:px-40 max-w-[1440px] mx-auto">
+      <nav className="flex justify-between items-center gap-3 px-4 py-4 md:px-6 lg:px-40 max-w-[1440px] mx-auto">
         <div className="logo">
           <Link href="/">
             <Image src="/assets/logos/logo-swiss-armsport-federation.svg" alt="SAF Logo" width={70} height={70} />
