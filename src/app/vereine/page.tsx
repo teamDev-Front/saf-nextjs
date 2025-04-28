@@ -6,20 +6,22 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 // Dados dos clubes (em uma aplicação real, isso viria do banco de dados)
+// Atualize a lista de clubes em src/app/vereine/page.tsx
+
 const clubs = [
     {
         id: 1,
-        name: 'ASC Spartans',
-        canton: 'St. Gallen',
+        name: 'ASC Ajoulot',
+        canton: 'Jura',
         logo: '/assets/logos/asc-spartans-logo.svg',
         address: [
-            'ASC Spartans',
-            'Rickenkläranlagestrasse 561',
-            '8726 Ricken'
+            'ASC Ajoulot',
+            '',
+            ''
         ],
         contact: {
-            name: 'Dennis Leuenberger',
-            email: 'dennis-l-92@hotmail.com'
+            name: 'Jimmy Lerch',
+            email: 'jimmy.lerch@hotmail.ch'
         },
         social: {
             instagram: '#',
@@ -29,173 +31,13 @@ const clubs = [
     },
     {
         id: 2,
-        name: 'ASC Grizzlys',
-        canton: 'St. Gallen',
-        logo: '/assets/logos/asc-spartans-logo.svg',
-        address: [
-            'ASC Grizzlys',
-            'Nauen 88',
-            '8638 Goldingen'
-        ],
-        contact: {
-            name: 'Roger Braunwalder',
-            email: null
-        },
-        social: {
-            instagram: '#',
-            facebook: '#',
-            youtube: '#'
-        }
-    },
-    {
-        id: 3,
-        name: 'Pulling Crew Zürich',
-        canton: 'Zürich',
-        logo: '/assets/logos/pulling-crew-zurich-logo.svg',
-        address: [
-            'Pulling Crew Zürich',
-            'Stockerstrasse 44',
-            '8002 Zürich'
-        ],
-        contact: {
-            name: 'Luca Mastrogiovanni',
-            email: 'mastrogiovanni_luca@hotmail.com'
-        },
-        social: {
-            instagram: '#',
-            facebook: '#',
-            youtube: '#'
-        }
-    },
-    {
-        id: 4,
-        name: 'ASC Wolf',
-        canton: 'Aargau',
-        logo: '/assets/logos/asc-spartans-logo.svg',
-        address: [
-            'ASC Wolf',
-            'Huebweg 9b',
-            '5235 Rüfenach AG'
-        ],
-        contact: {
-            name: 'Sven Roller',
-            email: 'jaecke.tattoo@gmx.ch'
-        },
-        social: {
-            instagram: '#',
-            facebook: '#',
-            youtube: '#'
-        }
-    },
-    {
-        id: 5,
-        name: 'L.A.C.',
-        canton: 'Thurgau',
-        logo: '/assets/logos/asc-spartans-logo.svg',
-        address: [
-            'L.A.C.',
-            'Almensbergstrasse 8',
-            '9314 Steinebrunn'
-        ],
-        contact: {
-            name: 'Ivan Sciaroni',
-            email: 'loewenarmcrew@gmail.com'
-        },
-        social: {
-            instagram: '#',
-            facebook: '#',
-            youtube: '#'
-        }
-    },
-    {
-        id: 6,
-        name: 'Gorillas Arm Wrestling',
-        canton: 'Zürich',
-        logo: '/assets/logos/asc-spartans-logo.svg',
-        address: [
-            'Gorillas Arm Wrestling',
-            'Dorfstrasse 11',
-            '8447 Dachsen'
-        ],
-        contact: {
-            name: 'Patrick Wickli',
-            email: 'patrick.wickli@uw-plus.ch'
-        },
-        social: {
-            instagram: '#',
-            facebook: '#',
-            youtube: '#'
-        }
-    },
-    {
-        id: 7,
-        name: 'ASC Ajoulot',
-        canton: 'Jura',
-        logo: '/assets/logos/asc-spartans-logo.svg',
-        address: [
-            'ASC Ajoulot',
-            'Rue Paul-Montavon 2',
-            '2950 Courgenay'
-        ],
-        contact: {
-            name: 'Jimmy Lerch',
-            email: 'brasdeferajoie@hotmail.ch'
-        },
-        social: {
-            instagram: '#',
-            facebook: '#',
-            youtube: '#'
-        }
-    },
-    {
-        id: 8,
-        name: 'ASC Kobra',
-        canton: 'Bern',
-        logo: '/assets/logos/asc-spartans-logo.svg',
-        address: [
-            'ASC Kobra',
-            'Bielstrasse 32',
-            '3053 Münchenbuchsee'
-        ],
-        contact: {
-            name: 'Chrigu Schneiter',
-            email: 'asckobra@gmail.com'
-        },
-        social: {
-            instagram: '#',
-            facebook: '#',
-            youtube: '#'
-        }
-    },
-    {
-        id: 9,
-        name: 'Underground Armsport',
-        canton: 'Basel-Landschaft',
-        logo: '/assets/logos/asc-spartans-logo.svg',
-        address: [
-            'Underground Armsport',
-            'Hauptstrasse 57',
-            '4451 Wintersingen BL'
-        ],
-        contact: {
-            name: 'Pieter de Vries',
-            email: 'pieterdevries.urk@gmail.com'
-        },
-        social: {
-            instagram: '#',
-            facebook: '#',
-            youtube: '#'
-        }
-    },
-    {
-        id: 10,
         name: 'ASC Armpower',
         canton: 'St. Gallen',
         logo: '/assets/logos/asc-spartans-logo.svg',
         address: [
             'ASC Armpower',
-            'Gewerbestrasse 3',
-            '9445 Rebstein'
+            'Gewerbestr. 3',
+            '9443 Rebstein'
         ],
         contact: {
             name: 'Giovanni Mazza',
@@ -208,18 +50,238 @@ const clubs = [
         }
     },
     {
+        id: 3,
+        name: 'Bras de Fer NE',
+        canton: 'Neuenburg',
+        logo: '/assets/logos/asc-spartans-logo.svg',
+        address: [
+            'Bras de Fer NE',
+            '',
+            ''
+        ],
+        contact: {
+            name: '',
+            email: null
+        },
+        social: {
+            instagram: '#',
+            facebook: '#',
+            youtube: '#'
+        }
+    },
+    {
+        id: 4,
+        name: 'ASC Kobra',
+        canton: 'Bern',
+        logo: '/assets/logos/asc-spartans-logo.svg',
+        address: [
+            'ASC Kobra',
+            'Bielstr. 32',
+            '3053 Münchebuchsee'
+        ],
+        contact: {
+            name: 'Chrigu Schneiter',
+            email: 'asckobra@gmail.com'
+        },
+        social: {
+            instagram: '#',
+            facebook: '#',
+            youtube: '#'
+        }
+    },
+    {
+        id: 5,
+        name: 'ASC Spartans',
+        canton: 'St. Gallen',
+        logo: '/assets/logos/asc-spartans-logo.svg',
+        address: [
+            'ASC Spartans',
+            '',
+            ''
+        ],
+        contact: {
+            name: 'Dennis Leuenberger',
+            email: 'dennis-l-92@hotmail.com'
+        },
+        social: {
+            instagram: '#',
+            facebook: '#',
+            youtube: '#'
+        }
+    },
+    {
+        id: 6,
+        name: 'Taurus',
+        canton: 'Aargau',
+        logo: '/assets/logos/asc-spartans-logo.svg',
+        address: [
+            'Taurus',
+            'Gvenzstrasse 38',
+            '5525 Fischbach-Göslikon'
+        ],
+        contact: {
+            name: 'Vasco Manzini',
+            email: 'v_manzini@outlook.com'
+        },
+        social: {
+            instagram: '#',
+            facebook: '#',
+            youtube: '#'
+        }
+    },
+    {
+        id: 7,
+        name: 'ASC Wolf',
+        canton: 'Aargau',
+        logo: '/assets/logos/asc-spartans-logo.svg',
+        address: [
+            'ASC Wolf',
+            '',
+            ''
+        ],
+        contact: {
+            name: 'Sven Roller',
+            email: 'jaecke.tattoo@gmx.ch'
+        },
+        social: {
+            instagram: '#',
+            facebook: '#',
+            youtube: '#'
+        }
+    },
+    {
+        id: 8,
+        name: 'Pulling Crew',
+        canton: 'Zürich',
+        logo: '/assets/logos/pulling-crew-zurich-logo.svg',
+        address: [
+            'Pulling Crew',
+            '',
+            ''
+        ],
+        contact: {
+            name: 'Luca Hartmann',
+            email: 'Hartinoa@outlook.de'
+        },
+        social: {
+            instagram: '#',
+            facebook: '#',
+            youtube: '#'
+        }
+    },
+    {
+        id: 9,
+        name: 'Gorillas',
+        canton: 'Zürich',
+        logo: '/assets/logos/asc-spartans-logo.svg',
+        address: [
+            'Gorillas',
+            'Nordstr. 2',
+            '8447 Dachsen'
+        ],
+        contact: {
+            name: 'Patrick Wickli',
+            email: 'p.wickli@wickli.ch'
+        },
+        social: {
+            instagram: '#',
+            facebook: '#',
+            youtube: '#'
+        }
+    },
+    {
+        id: 10,
+        name: 'L.A.C',
+        canton: 'Thurgau',
+        logo: '/assets/logos/asc-spartans-logo.svg',
+        address: [
+            'L.A.C',
+            '',
+            ''
+        ],
+        contact: {
+            name: 'Ivan Scaroni',
+            email: 'loewenarmcrew@gmail.com'
+        },
+        social: {
+            instagram: '#',
+            facebook: '#',
+            youtube: '#'
+        }
+    },
+    {
         id: 11,
-        name: 'Eagel Grip Geneva',
+        name: 'Eagel Grip Genf',
         canton: 'Genf',
         logo: '/assets/logos/asc-spartans-logo.svg',
         address: [
-            'Eagel Grip Geneva',
-            'Rue Blanche 4',
-            '1205 Genf'
+            'Eagel Grip Genf',
+            '',
+            ''
         ],
         contact: {
-            name: 'Johann Braun',
-            email: 'email@johannbraun.com'
+            name: 'Stv. Johann (D)',
+            email: 'email@johannbaun.com'
+        },
+        social: {
+            instagram: '#',
+            facebook: '#',
+            youtube: '#'
+        }
+    },
+    {
+        id: 12,
+        name: 'Underground',
+        canton: 'Basel-Landschaft',
+        logo: '/assets/logos/asc-spartans-logo.svg',
+        address: [
+            'Underground',
+            'Hauptstr. 57',
+            '4451 Wintersingen'
+        ],
+        contact: {
+            name: 'Pieter de Vries',
+            email: 'pieterdevriesurk@hotmail.com'
+        },
+        social: {
+            instagram: '#',
+            facebook: '#',
+            youtube: '#'
+        }
+    },
+    {
+        id: 13,
+        name: 'Armwrestling Zürich',
+        canton: 'Zürich',
+        logo: '/assets/logos/asc-spartans-logo.svg',
+        address: [
+            'Armwrestling Zürich',
+            'Cramerstrasse 7',
+            '8004 Zürich'
+        ],
+        contact: {
+            name: 'Christian Käslin',
+            email: 'c.kaeslin@gmx.ch'
+        },
+        social: {
+            instagram: '#',
+            facebook: '#',
+            youtube: '#'
+        }
+    },
+    {
+        id: 14,
+        name: 'Armforce Basel',
+        canton: 'Basel',
+        logo: '/assets/logos/asc-spartans-logo.svg',
+        address: [
+            'Armforce Basel',
+            '',
+            ''
+        ],
+        contact: {
+            name: 'Michael von Runkel',
+            email: 'michaelvonrunkel@yahoo.de'
         },
         social: {
             instagram: '#',

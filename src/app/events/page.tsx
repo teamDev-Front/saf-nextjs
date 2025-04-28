@@ -209,7 +209,7 @@ export default function Events() {
                                     alt={event.title}
                                     width={528}
                                     height={293}
-                                    className="rounded w-full md:w-[528px] h-auto max-w-full"
+                                    className="rounded w-full md:w-[528px] h-auto object-cover max-w-full"
                                 />
                                 <div className="event-item-info flex gap-4">
                                     <div className="event-date flex flex-col items-center justify-center bg-main-0 rounded w-16 h-20 p-2">
@@ -235,13 +235,13 @@ export default function Events() {
                 </div>
             </section>
 
-            <section className="carousel-section p-16">
+            <section className="carousel-section py-16 bg-grey--1 bg-opacity-30">
                 <div className="carousel-container mx-auto max-w-7xl px-6 md:px-20">
                     <div className="header text-center mb-12">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4">Impressionen</h1>
                         <p className="text-xl">Erlebe die Atmosphäre vergangener Turniere und Events des SAF.</p>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div className="carousel-item">
                             <Image
                                 src="/assets/images/event-february-bern-cup.png"

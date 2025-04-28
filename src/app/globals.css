@@ -73,3 +73,59 @@ h3 {
 p {
   @apply text-base md:text-lg lg:text-xl;
 }
+
+/* Adicione ao arquivo app/globals.css */
+
+.event-item {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.event-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.club-card {
+  transition: transform 0.3s ease;
+}
+
+.club-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Ajuste para o contador regressivo */
+.countdown-item {
+  perspective: 1000px;
+}
+
+.countdown-number {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backface-visibility: hidden;
+}
+
+.countdown-item:hover {
+  transform: translateY(-5px);
+}
+
+/* Melhorias para dispositivos móveis */
+@media (max-width: 768px) {
+  .hero {
+    padding-top: 80px;
+  }
+  
+  .section-padding {
+    padding: 64px 20px;
+  }
+  
+  .countdown {
+    gap: 4px;
+  }
+  
+  .event-item {
+    flex-direction: column;
+  }
+  
+  .club-card {
+    flex-direction: column;
+  }
+}

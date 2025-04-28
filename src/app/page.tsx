@@ -47,26 +47,26 @@ export default function Home() {
           <h1 className="hero-large">Swiss Armsport Federation</h1>
           <p className="text-xl">Der offizielle Schweizer Armwrestling-Verband. Unser nächstes Event startet in</p>
         </div>
-        
-        <div className="countdown flex gap-1 md:gap-4">
-          <div className="countdown-item w-20 md:w-48 p-2 md:p-8 bg-black bg-opacity-60 border-4 border-white flex flex-col items-center">
+
+        <div className="countdown flex gap-2 md:gap-8">
+          <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
             <span className="countdown-number text-3xl md:text-6xl font-bold text-white">{timeLeft.days.toString().padStart(2, '0')}</span>
-            <span className="countdown-label text-base md:text-xl font-semibold text-white">Tagen</span>
+            <span className="countdown-label text-base md:text-xl font-medium text-white">Tagen</span>
           </div>
-          <div className="countdown-item w-20 md:w-48 p-2 md:p-8 bg-black bg-opacity-60 border-4 border-white flex flex-col items-center">
+          <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
             <span className="countdown-number text-3xl md:text-6xl font-bold text-white">{timeLeft.hours.toString().padStart(2, '0')}</span>
-            <span className="countdown-label text-base md:text-xl font-semibold text-white">Stunden</span>
+            <span className="countdown-label text-base md:text-xl font-medium text-white">Stunden</span>
           </div>
-          <div className="countdown-item w-20 md:w-48 p-2 md:p-8 bg-black bg-opacity-60 border-4 border-white flex flex-col items-center">
+          <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
             <span className="countdown-number text-3xl md:text-6xl font-bold text-white">{timeLeft.minutes.toString().padStart(2, '0')}</span>
-            <span className="countdown-label text-base md:text-xl font-semibold text-white">Minuten</span>
+            <span className="countdown-label text-base md:text-xl font-medium text-white">Minuten</span>
           </div>
-          <div className="countdown-item w-20 md:w-48 p-2 md:p-8 bg-black bg-opacity-60 border-4 border-white flex flex-col items-center">
+          <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
             <span className="countdown-number text-3xl md:text-6xl font-bold text-white">{timeLeft.seconds.toString().padStart(2, '0')}</span>
-            <span className="countdown-label text-base md:text-xl font-semibold text-white">Sekunden</span>
+            <span className="countdown-label text-base md:text-xl font-medium text-white">Sekunden</span>
           </div>
         </div>
-        
+
         <div className="hero-buttons flex flex-col md:flex-row gap-6 items-center">
           <Link href="/events" className="btn btn-outline">
             <Image src="/assets/icons/i-arrow-right.svg" alt="arrow right" width={20} height={20} className="mr-2" />
@@ -116,11 +116,11 @@ export default function Home() {
             <Link href="/armwrestling" className="btn btn-primary">Mehr erfahren</Link>
           </div>
           <div className="image-content">
-            <Image 
-              src="/assets/images/armwrestling-demonstration-x-triple-fitness.png" 
-              alt="Armwrestling demonstration" 
-              width={460} 
-              height={600} 
+            <Image
+              src="/assets/images/armwrestling-demonstration-x-triple-fitness.png"
+              alt="Armwrestling demonstration"
+              width={460}
+              height={600}
               className="w-full max-w-[460px] h-auto"
             />
           </div>
@@ -131,11 +131,11 @@ export default function Home() {
         <div className="sponsors-content">
           <h2>CHOICE OF CHAMPIONS</h2>
           <p className="mb-6">Unser Partner für Supplements:</p>
-          <Image 
-            src="/assets/logos/logo-x-triple.svg" 
-            alt="Sponsor logo" 
-            width={404} 
-            height={100} 
+          <Image
+            src="/assets/logos/logo-x-triple.svg"
+            alt="Sponsor logo"
+            width={404}
+            height={100}
             className="max-w-[404px] h-auto mx-auto my-8"
           />
           <a href="https://xfitnessshop.ch" target="_blank" rel="noopener noreferrer" className="btn btn-outline inline-flex">

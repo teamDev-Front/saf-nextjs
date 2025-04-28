@@ -36,7 +36,7 @@ export default function EventDetail() {
   const router = useRouter();
   const { user } = useAuth();
   const eventId = params.id;
-  
+
   const [event, setEvent] = useState<Event | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,7 +53,7 @@ export default function EventDetail() {
           axios.get(`/api/events/${eventId}`),
           axios.get(`/api/events/${eventId}/comments`)
         ]);
-        
+
         setEvent(eventRes.data);
         setComments(commentsRes.data);
       } catch (error) {
@@ -63,7 +63,7 @@ export default function EventDetail() {
         setLoading(false);
       }
     };
-    
+
     if (eventId) {
       fetchEventAndComments();
     }
@@ -91,7 +91,7 @@ export default function EventDetail() {
 
   const showAlert = (message: string, type: 'success' | 'danger') => {
     setAlert({ message, type });
-    
+
     // Esconder alerta após 5 segundos
     setTimeout(() => {
       setAlert(null);
@@ -100,23 +100,23 @@ export default function EventDetail() {
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!commentText.trim()) return;
-    
+
     try {
       const response = await axios.post(`/api/events/${eventId}/comments`, {
         comment: commentText,
         is_question: isQuestion
       });
-      
+
       // Atualizar lista de comentários
       const updatedComments = await axios.get(`/api/events/${eventId}/comments`);
       setComments(updatedComments.data);
-      
+
       // Limpar formulário
       setCommentText('');
       setIsQuestion(false);
-      
+
       showAlert('Kommentar erfolgreich hinzugefügt!', 'success');
     } catch (error) {
       console.error('Erro ao adicionar comentário:', error);
@@ -131,21 +131,21 @@ export default function EventDetail() {
 
   const handleSubmitReply = async (commentId: number) => {
     if (!replyText.trim()) return;
-    
+
     try {
       await axios.post(`/api/events/${eventId}/comments`, {
         comment: replyText,
         parent_id: commentId
       });
-      
+
       // Atualizar lista de comentários
       const updatedComments = await axios.get(`/api/events/${eventId}/comments`);
       setComments(updatedComments.data);
-      
+
       // Fechar formulário de resposta
       setReplyingTo(null);
       setReplyText('');
-      
+
       showAlert('Antwort erfolgreich hinzugefügt!', 'success');
     } catch (error) {
       console.error('Erro ao adicionar resposta:', error);
@@ -157,14 +157,14 @@ export default function EventDetail() {
     if (!window.confirm('Sind Sie sicher, dass Sie diesen Kommentar löschen möchten?')) {
       return;
     }
-    
+
     try {
       await axios.delete(`/api/comments/${commentId}`);
-      
+
       // Atualizar lista de comentários
       const updatedComments = await axios.get(`/api/events/${eventId}/comments`);
       setComments(updatedComments.data);
-      
+
       showAlert('Kommentar erfolgreich gelöscht!', 'success');
     } catch (error) {
       console.error('Erro ao excluir comentário:', error);
@@ -208,9 +208,9 @@ export default function EventDetail() {
       </div>
 
       <div className="w-full h-[500px] relative mb-8 overflow-hidden rounded-lg">
-        <Image 
-          src={event.image_path || "/assets/images/event-placeholder.jpg"} 
-          alt={event.title} 
+        <Image
+          src={event.image_path || "/assets/images/event-placeholder.jpg"}
+          alt={event.title}
           fill
           className="object-cover"
         />
@@ -235,7 +235,7 @@ export default function EventDetail() {
           )}
         </div>
 
-        <div className="event-details bg-grey--1 p-6 rounded-lg">
+        <div className="event-details bg-grey--1 p-6 rounded-lg h-fit sticky top-24">
           <div className="event-detail-item mb-4">
             <div className="detail-label font-semibold text-white mb-1">Datum</div>
             <div className="detail-value text-gray-400">{formatDate(event.date)}</div>
@@ -264,7 +264,7 @@ export default function EventDetail() {
 
         {user ? (
           <form onSubmit={handleSubmitComment} className="comment-form mb-8">
-            <textarea 
+            <textarea
               className="w-full p-4 border border-grey--1 bg-black rounded text-white text-base mb-4 min-h-[100px] resize-y focus:outline-none focus:border-main-0"
               placeholder="Schreiben Sie Ihren Kommentar oder Ihre Frage hier..."
               value={commentText}
@@ -272,16 +272,16 @@ export default function EventDetail() {
             ></textarea>
             <div className="comment-actions flex justify-between items-center flex-col gap-4 sm:flex-row">
               <label className="question-checkbox flex items-center gap-2 text-gray-400">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   checked={isQuestion}
                   onChange={(e) => setIsQuestion(e.target.checked)}
                   className="rounded bg-transparent border-gray-400"
-                /> 
+                />
                 Dies ist eine Frage
               </label>
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="submit-comment py-2.5 px-5 bg-main-0 text-white border-none rounded font-semibold text-base cursor-pointer w-full sm:w-auto hover:bg-main--1"
               >
                 Kommentar abschicken
@@ -301,8 +301,8 @@ export default function EventDetail() {
         <div className="comment-list space-y-6">
           {comments.length > 0 ? (
             comments.map(comment => (
-              <div 
-                key={comment.id} 
+              <div
+                key={comment.id}
                 className={`comment-card bg-grey--1 p-5 rounded-lg ${comment.is_question ? 'border-l-4 border-main-0' : ''}`}
               >
                 <div className="comment-header flex justify-between mb-3">
@@ -312,7 +312,7 @@ export default function EventDetail() {
                 <div className="comment-content text-gray-300 mb-4">{comment.comment}</div>
                 <div className="comment-actions-bar flex justify-end gap-4">
                   {user && (
-                    <button 
+                    <button
                       className="comment-action text-gray-400 text-sm bg-transparent border-none cursor-pointer hover:text-white"
                       onClick={() => handleReply(comment.id)}
                     >
@@ -320,7 +320,7 @@ export default function EventDetail() {
                     </button>
                   )}
                   {user && (user.id === comment.user_id || user.is_admin) && (
-                    <button 
+                    <button
                       className="comment-action text-gray-400 text-sm bg-transparent border-none cursor-pointer hover:text-white"
                       onClick={() => handleDeleteComment(comment.id)}
                     >
@@ -328,18 +328,18 @@ export default function EventDetail() {
                     </button>
                   )}
                 </div>
-                
+
                 {replyingTo === comment.id && user && (
                   <div className="reply-form mt-4">
-                    <textarea 
+                    <textarea
                       className="w-full p-3 border border-grey--1 bg-black rounded text-white text-base mb-3 min-h-[80px] resize-y focus:outline-none focus:border-main-0"
                       placeholder="Schreiben Sie Ihre Antwort hier..."
                       value={replyText}
                       onChange={(e) => setReplyText(e.target.value)}
                     ></textarea>
                     <div className="flex justify-end">
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         className="py-2 px-4 bg-main-0 text-white border-none rounded font-semibold text-base cursor-pointer hover:bg-main--1"
                         onClick={() => handleSubmitReply(comment.id)}
                       >
@@ -348,7 +348,7 @@ export default function EventDetail() {
                     </div>
                   </div>
                 )}
-                
+
                 {comment.replies && comment.replies.length > 0 && (
                   <div className="comment-replies mt-4 pl-6 border-l border-grey--1">
                     {comment.replies.map(reply => (
@@ -360,7 +360,7 @@ export default function EventDetail() {
                         <div className="comment-content text-gray-300 mb-2">{reply.comment}</div>
                         {user && (user.id === reply.user_id || user.is_admin) && (
                           <div className="comment-actions-bar flex justify-end">
-                            <button 
+                            <button
                               className="comment-action text-gray-400 text-sm bg-transparent border-none cursor-pointer hover:text-white"
                               onClick={() => handleDeleteComment(reply.id)}
                             >
