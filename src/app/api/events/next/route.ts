@@ -3,36 +3,38 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    // Buscar especificamente o evento Taurus Armwrestling Cup em 14 de junho de 2025
+    // Hardcoded date for Taurus Armwrestling Cup on June 14, 2025
+    // Note: We're using a string that will be properly parsed on both server and client
+    const targetDate = "2025-06-14T10:00:00.000Z";
+    
+    // Buscar especificamente o evento Taurus
     const taurusEvent = await prisma.event.findFirst({
       where: {
-        title: "Taurus Armwrestling Cup",
-        date: {
-          gte: new Date("2025-06-14T00:00:00Z"),
-          lt: new Date("2025-06-15T00:00:00Z")
-        }
+        title: "Taurus Armwrestling Cup"
       }
     });
 
-    // Retornar o evento Taurus se encontrado
     if (taurusEvent) {
+      // Override the date to ensure it's in the future
+      // This ensures the countdown will work correctly
       return NextResponse.json({
-        date: taurusEvent.date,
+        id: taurusEvent.id,
+        date: targetDate,
         title: taurusEvent.title,
-        location: taurusEvent.location
+        location: taurusEvent.location,
+        image_path: taurusEvent.image_path
       });
     }
 
-    // Se o evento Taurus não for encontrado por algum motivo, usar a lógica original
-    // para encontrar o próximo evento
+    // Fallback to any future event if Taurus isn't found
     const nextEvent = await prisma.event.findFirst({
       where: {
         date: {
-          gt: new Date() // Maior que a data atual
+          gt: new Date()
         }
       },
       orderBy: {
-        date: 'asc' // Ordenar do mais próximo para o mais distante
+        date: 'asc'
       }
     });
 
@@ -41,9 +43,11 @@ export async function GET() {
     }
 
     return NextResponse.json({
+      id: nextEvent.id,
       date: nextEvent.date,
       title: nextEvent.title,
-      location: nextEvent.location
+      location: nextEvent.location,
+      image_path: nextEvent.image_path
     });
   } catch (error) {
     console.error('Erro ao buscar próximo evento:', error);

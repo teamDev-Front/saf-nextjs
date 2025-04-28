@@ -1,4 +1,3 @@
-// app/page.tsx
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -13,10 +12,13 @@ export default function Home() {
     seconds: 0
   });
   const [nextEvent, setNextEvent] = useState<{
+    id?: number;
     date: string;
     title: string;
     location: string;
+    image_path?: string;
   } | null>(null);
+  const [eventPassed, setEventPassed] = useState(false);
 
   useEffect(() => {
     const fetchNextEvent = async () => {
@@ -38,18 +40,25 @@ export default function Home() {
   useEffect(() => {
     if (!nextEvent) return;
 
-    const eventDate = new Date(nextEvent.date);
-
     const updateCountdown = () => {
       const now = new Date();
+      const eventDate = new Date(nextEvent.date);
+      
+      // Ensure the date is being interpreted correctly
+      console.log('Current Date:', now);
+      console.log('Event Date:', eventDate);
+      
       const distance = eventDate.getTime() - now.getTime();
+      console.log('Time Distance (ms):', distance);
 
       if (distance < 0) {
-        // O evento já começou
+        // The event has already started
+        setEventPassed(true);
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
         return;
       }
 
+      setEventPassed(false);
       setTimeLeft({
         days: Math.floor(distance / (1000 * 60 * 60 * 24)),
         hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
@@ -64,19 +73,41 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [nextEvent]);
 
+  // Format the event date for display
+  const formatEventDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
+
   return (
     <>
       <section className="hero hero-home bg-[url('/assets/backgrounds/bg-home-triple-x-armwrestling.png')] bg-cover bg-no-repeat">
         <div className="hero-content">
           <h1 className="hero-large">Swiss Armsport Federation</h1>
-          <p className="text-xl">
-            {nextEvent 
-              ? `Unser nächstes Event startet in` 
-              : "Der offizielle Schweizer Armwrestling-Verband"}
-          </p>
+          {nextEvent && (
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-xl mb-0">
+                {eventPassed 
+                  ? "Event hat begonnen!" 
+                  : `Countdown zum Taurus Armwrestling Cup`}
+              </p>
+              <p className="text-lg text-main-1 font-semibold">
+                {formatEventDate(nextEvent.date)} in {nextEvent.location}
+              </p>
+            </div>
+          )}
+          {!nextEvent && (
+            <p className="text-xl">
+              Der offizielle Schweizer Armwrestling-Verband
+            </p>
+          )}
         </div>
 
-        {nextEvent && (
+        {nextEvent && !eventPassed && (
           <div className="countdown flex gap-2 md:gap-8">
             <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
               <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
@@ -107,7 +138,10 @@ export default function Home() {
 
         <div className="hero-buttons flex flex-col md:flex-row gap-6 items-center">
           {nextEvent && (
-            <Link href="/events" className="btn btn-outline">
+            <Link 
+              href={nextEvent.id ? `/events/${nextEvent.id}` : "/events"} 
+              className="btn btn-outline"
+            >
               <Image 
                 src="/assets/icons/i-arrow-right.svg" 
                 alt="arrow right" 
