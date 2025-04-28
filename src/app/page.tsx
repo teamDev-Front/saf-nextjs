@@ -1,9 +1,9 @@
 // app/page.tsx
 "use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState({
@@ -12,9 +12,33 @@ export default function Home() {
     minutes: 0,
     seconds: 0
   });
+  const [nextEvent, setNextEvent] = useState<{
+    date: string;
+    title: string;
+    location: string;
+  } | null>(null);
 
   useEffect(() => {
-    const eventDate = new Date('2025-04-26T12:30:00');
+    const fetchNextEvent = async () => {
+      try {
+        const response = await fetch('/api/events/next');
+        const event = await response.json();
+
+        if (event) {
+          setNextEvent(event);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar próximo evento:', error);
+      }
+    };
+
+    fetchNextEvent();
+  }, []);
+
+  useEffect(() => {
+    if (!nextEvent) return;
+
+    const eventDate = new Date(nextEvent.date);
 
     const updateCountdown = () => {
       const now = new Date();
@@ -38,41 +62,69 @@ export default function Home() {
     const interval = setInterval(updateCountdown, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [nextEvent]);
 
   return (
     <>
       <section className="hero hero-home bg-[url('/assets/backgrounds/bg-home-triple-x-armwrestling.png')] bg-cover bg-no-repeat">
         <div className="hero-content">
           <h1 className="hero-large">Swiss Armsport Federation</h1>
-          <p className="text-xl">Der offizielle Schweizer Armwrestling-Verband. Unser nächstes Event startet in</p>
+          <p className="text-xl">
+            {nextEvent 
+              ? `Unser nächstes Event startet in` 
+              : "Der offizielle Schweizer Armwrestling-Verband"}
+          </p>
         </div>
 
-        <div className="countdown flex gap-2 md:gap-8">
-          <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
-            <span className="countdown-number text-3xl md:text-6xl font-bold text-white">{timeLeft.days.toString().padStart(2, '0')}</span>
-            <span className="countdown-label text-base md:text-xl font-medium text-white">Tagen</span>
+        {nextEvent && (
+          <div className="countdown flex gap-2 md:gap-8">
+            <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
+              <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
+                {timeLeft.days.toString().padStart(2, '0')}
+              </span>
+              <span className="countdown-label text-base md:text-xl font-medium text-white">Tagen</span>
+            </div>
+            <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
+              <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
+                {timeLeft.hours.toString().padStart(2, '0')}
+              </span>
+              <span className="countdown-label text-base md:text-xl font-medium text-white">Stunden</span>
+            </div>
+            <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
+              <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
+                {timeLeft.minutes.toString().padStart(2, '0')}
+              </span>
+              <span className="countdown-label text-base md:text-xl font-medium text-white">Minuten</span>
+            </div>
+            <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
+              <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
+                {timeLeft.seconds.toString().padStart(2, '0')}
+              </span>
+              <span className="countdown-label text-base md:text-xl font-medium text-white">Sekunden</span>
+            </div>
           </div>
-          <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
-            <span className="countdown-number text-3xl md:text-6xl font-bold text-white">{timeLeft.hours.toString().padStart(2, '0')}</span>
-            <span className="countdown-label text-base md:text-xl font-medium text-white">Stunden</span>
-          </div>
-          <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
-            <span className="countdown-number text-3xl md:text-6xl font-bold text-white">{timeLeft.minutes.toString().padStart(2, '0')}</span>
-            <span className="countdown-label text-base md:text-xl font-medium text-white">Minuten</span>
-          </div>
-          <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
-            <span className="countdown-number text-3xl md:text-6xl font-bold text-white">{timeLeft.seconds.toString().padStart(2, '0')}</span>
-            <span className="countdown-label text-base md:text-xl font-medium text-white">Sekunden</span>
-          </div>
-        </div>
+        )}
 
         <div className="hero-buttons flex flex-col md:flex-row gap-6 items-center">
-          <Link href="/events" className="btn btn-outline">
-            <Image src="/assets/icons/i-arrow-right.svg" alt="arrow right" width={20} height={20} className="mr-2" />
-            Zum Event
-          </Link>
-          <Image src="/assets/logos/logo-x-triple.svg" alt="Event logo" className="h-12 md:h-16" width={120} height={60} />
+          {nextEvent && (
+            <Link href="/events" className="btn btn-outline">
+              <Image 
+                src="/assets/icons/i-arrow-right.svg" 
+                alt="arrow right" 
+                width={20} 
+                height={20} 
+                className="mr-2" 
+              />
+              Zum Event
+            </Link>
+          )}
+          <Image 
+            src="/assets/logos/logo-x-triple.svg" 
+            alt="Event logo" 
+            className="h-12 md:h-16" 
+            width={120} 
+            height={60} 
+          />
         </div>
       </section>
 
