@@ -1,63 +1,47 @@
-// app/events/page.tsx
 "use client";
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import axios from 'axios';
+import { Event } from '@prisma/client';
 
-type Event = {
-    id: number;
-    title: string;
-    date: string;
-    time?: string;
-    location: string;
-    description?: string;
-    image_path?: string;
-    details?: string;
-};
+
 
 export default function Events() {
     const [events, setEvents] = useState<Event[]>([]);
     const [nextEvent, setNextEvent] = useState<Event | null>(null);
     const [loading, setLoading] = useState(true);
     const [selectedLocation, setSelectedLocation] = useState('Alle');
-    const [locations, setLocations] = useState<string[]>([]);
+    const [locations, setLocations] = useState<string[]>(['Alle']);
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await axios.get('/api/events');
-                const eventsData = response.data;
+                const response = await fetch('/api/events');
+                const eventsData = await response.json();
 
-                // Ordenar eventos por data
-                const sortedEvents = [...eventsData].sort((a, b) =>
-                    new Date(a.date).getTime() - new Date(b.date).getTime()
-                );
-
-                setEvents(sortedEvents);
-
-                // Definir o próximo evento (o primeiro evento futuro)
+                // Filtrar e ordenar eventos futuros
                 const now = new Date();
-                const upcomingEvents = sortedEvents.filter(event =>
-                    new Date(event.date) > now
-                );
+                const futureEvents = eventsData
+                    .filter((event: Event) => new Date(event.date) >= now)
+                    .sort((a: Event, b: Event) => 
+                        new Date(a.date).getTime() - new Date(b.date).getTime()
+                    );
 
-                if (upcomingEvents.length > 0) {
-                    setNextEvent(upcomingEvents[0]);
+                setEvents(eventsData);
+
+                // Definir próximo evento
+                if (futureEvents.length > 0) {
+                    setNextEvent(futureEvents[0]);
                 }
 
-                // Extrair localizações únicas para o filtro
-                // app/events/page.tsx (trecho corrigido)
-
-                // Extrair localizações únicas para o filtro
+                // Extrair localizações únicas
                 const uniqueLocations = new Set<string>();
                 eventsData.forEach((event: Event) => {
                     const parts = event.location.split(',');
                     if (parts.length > 0) {
-                        let lastPart = parts[parts.length - 1].trim();
-                        const city = lastPart.replace(/^\d+\s*/, '').trim();
+                        let city = parts[parts.length - 1].trim().replace(/^\d+\s*/, '');
                         if (city) uniqueLocations.add(city);
                     }
                 });
@@ -73,6 +57,7 @@ export default function Events() {
         fetchEvents();
     }, []);
 
+    // Funções utilitárias de formatação (semelhantes à versão HTML)
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('de-DE', {
@@ -92,6 +77,7 @@ export default function Events() {
         return date.getDate();
     };
 
+    // Filtrar eventos por localização
     const filteredEvents = events.filter(event => {
         if (selectedLocation === 'Alle') return true;
 
