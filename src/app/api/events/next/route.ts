@@ -1,18 +1,38 @@
 import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    // Hardcoded Taurus event data with a future date
-    // No database query, just return the hardcoded event
+    // Obter a data atual
+    const currentDate = new Date();
+    
+    // Buscar o próximo evento futuro (mais próximo)
+    const nextEvent = await prisma.event.findFirst({
+      where: {
+        date: {
+          gt: currentDate // Data maior que a atual
+        }
+      },
+      orderBy: {
+        date: 'asc' // Ordenar por data ascendente para obter o mais próximo
+      }
+    });
+    
+    // Se não encontrar eventos futuros, retornar null
+    if (!nextEvent) {
+      return NextResponse.json(null);
+    }
+    
+    // Retornar o próximo evento com formato ISO para a data
     return NextResponse.json({
-      id: 3, // ID of the Taurus event
-      date: "2025-06-14T10:00:00.000Z", // ISO format date
-      title: "Taurus Armwrestling Cup",
-      location: "Rock City, Spitalweidstrasse 2, 4665 Offtringen",
-      image_path: "/assets/images/taurus-armwrestling-cup.jpg"
+      id: nextEvent.id,
+      date: nextEvent.date.toISOString(),
+      title: nextEvent.title,
+      location: nextEvent.location,
+      image_path: nextEvent.image_path
     });
   } catch (error) {
-    console.error('Erro ao retornar evento Taurus:', error);
+    console.error('Erro ao buscar próximo evento:', error);
     return NextResponse.json(null, { status: 500 });
   }
 }
