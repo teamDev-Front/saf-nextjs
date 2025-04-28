@@ -1,56 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    // Hardcoded date for Taurus Armwrestling Cup on June 14, 2025
-    // Note: We're using a string that will be properly parsed on both server and client
-    const targetDate = "2025-06-14T10:00:00.000Z";
-    
-    // Buscar especificamente o evento Taurus
-    const taurusEvent = await prisma.event.findFirst({
-      where: {
-        title: "Taurus Armwrestling Cup"
-      }
-    });
-
-    if (taurusEvent) {
-      // Override the date to ensure it's in the future
-      // This ensures the countdown will work correctly
-      return NextResponse.json({
-        id: taurusEvent.id,
-        date: targetDate,
-        title: taurusEvent.title,
-        location: taurusEvent.location,
-        image_path: taurusEvent.image_path
-      });
-    }
-
-    // Fallback to any future event if Taurus isn't found
-    const nextEvent = await prisma.event.findFirst({
-      where: {
-        date: {
-          gt: new Date()
-        }
-      },
-      orderBy: {
-        date: 'asc'
-      }
-    });
-
-    if (!nextEvent) {
-      return NextResponse.json(null);
-    }
-
+    // Hardcoded Taurus event data with a future date
+    // No database query, just return the hardcoded event
     return NextResponse.json({
-      id: nextEvent.id,
-      date: nextEvent.date,
-      title: nextEvent.title,
-      location: nextEvent.location,
-      image_path: nextEvent.image_path
+      id: 3, // ID of the Taurus event
+      date: "2025-06-14T10:00:00.000Z", // ISO format date
+      title: "Taurus Armwrestling Cup",
+      location: "Rock City, Spitalweidstrasse 2, 4665 Offtringen",
+      image_path: "/assets/images/taurus-armwrestling-cup.jpg"
     });
   } catch (error) {
-    console.error('Erro ao buscar próximo evento:', error);
+    console.error('Erro ao retornar evento Taurus:', error);
     return NextResponse.json(null, { status: 500 });
   }
 }

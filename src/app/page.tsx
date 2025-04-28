@@ -5,77 +5,52 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 export default function Home() {
+  // Hardcoded target date for Taurus event
+  const targetDate = new Date("2025-06-14T10:00:00.000Z");
+  
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0
   });
-  const [nextEvent, setNextEvent] = useState<{
-    id?: number;
-    date: string;
-    title: string;
-    location: string;
-    image_path?: string;
-  } | null>(null);
-  const [eventPassed, setEventPassed] = useState(false);
+  
+  const [nextEvent, setNextEvent] = useState({
+    id: 3,
+    title: "Taurus Armwrestling Cup",
+    date: targetDate.toISOString(),
+    location: "Rock City, Offtringen"
+  });
 
+  // Calculate time difference once on component mount
   useEffect(() => {
-    const fetchNextEvent = async () => {
-      try {
-        const response = await fetch('/api/events/next');
-        const event = await response.json();
-
-        if (event) {
-          setNextEvent(event);
-        }
-      } catch (error) {
-        console.error('Erro ao buscar próximo evento:', error);
-      }
-    };
-
-    fetchNextEvent();
-  }, []);
-
-  useEffect(() => {
-    if (!nextEvent) return;
-
     const updateCountdown = () => {
       const now = new Date();
-      const eventDate = new Date(nextEvent.date);
+      const distance = targetDate.getTime() - now.getTime();
       
-      // Ensure the date is being interpreted correctly
-      console.log('Current Date:', now);
-      console.log('Event Date:', eventDate);
-      
-      const distance = eventDate.getTime() - now.getTime();
-      console.log('Time Distance (ms):', distance);
-
-      if (distance < 0) {
-        // The event has already started
-        setEventPassed(true);
+      // Always ensure positive values for countdown
+      if (distance > 0) {
+        setTimeLeft({
+          days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((distance % (1000 * 60)) / 1000)
+        });
+      } else {
+        // Keep at zero if time has passed
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        return;
       }
-
-      setEventPassed(false);
-      setTimeLeft({
-        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-        seconds: Math.floor((distance % (1000 * 60)) / 1000)
-      });
     };
 
+    // Update countdown immediately and then every second
     updateCountdown();
     const interval = setInterval(updateCountdown, 1000);
-
+    
     return () => clearInterval(interval);
-  }, [nextEvent]);
+  }, []);
 
-  // Format the event date for display
-  const formatEventDate = (dateString: string) => {
-    const date = new Date(dateString);
+  // Format date for display
+  const formatDate = (date: Date) => {
     return date.toLocaleDateString('de-DE', {
       day: '2-digit',
       month: '2-digit',
@@ -88,70 +63,54 @@ export default function Home() {
       <section className="hero hero-home bg-[url('/assets/backgrounds/bg-home-triple-x-armwrestling.png')] bg-cover bg-no-repeat">
         <div className="hero-content">
           <h1 className="hero-large">Swiss Armsport Federation</h1>
-          {nextEvent && (
-            <div className="flex flex-col items-center gap-2">
-              <p className="text-xl mb-0">
-                {eventPassed 
-                  ? "Event hat begonnen!" 
-                  : `Countdown zum Taurus Armwrestling Cup`}
-              </p>
-              <p className="text-lg text-main-1 font-semibold">
-                {formatEventDate(nextEvent.date)} in {nextEvent.location}
-              </p>
-            </div>
-          )}
-          {!nextEvent && (
+          <div className="flex flex-col items-center gap-2">
             <p className="text-xl">
-              Der offizielle Schweizer Armwrestling-Verband
+              Countdown zum Taurus Armwrestling Cup
             </p>
-          )}
+            <p className="text-lg text-main-1 font-semibold">
+              {formatDate(targetDate)} in {nextEvent.location}
+            </p>
+          </div>
         </div>
 
-        {nextEvent && !eventPassed && (
-          <div className="countdown flex gap-2 md:gap-8">
-            <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
-              <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
-                {timeLeft.days.toString().padStart(2, '0')}
-              </span>
-              <span className="countdown-label text-base md:text-xl font-medium text-white">Tagen</span>
-            </div>
-            <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
-              <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
-                {timeLeft.hours.toString().padStart(2, '0')}
-              </span>
-              <span className="countdown-label text-base md:text-xl font-medium text-white">Stunden</span>
-            </div>
-            <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
-              <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
-                {timeLeft.minutes.toString().padStart(2, '0')}
-              </span>
-              <span className="countdown-label text-base md:text-xl font-medium text-white">Minuten</span>
-            </div>
-            <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
-              <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
-                {timeLeft.seconds.toString().padStart(2, '0')}
-              </span>
-              <span className="countdown-label text-base md:text-xl font-medium text-white">Sekunden</span>
-            </div>
+        <div className="countdown flex gap-2 md:gap-8">
+          <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
+            <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
+              {timeLeft.days.toString().padStart(2, '0')}
+            </span>
+            <span className="countdown-label text-base md:text-xl font-medium text-white">Tagen</span>
           </div>
-        )}
+          <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
+            <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
+              {timeLeft.hours.toString().padStart(2, '0')}
+            </span>
+            <span className="countdown-label text-base md:text-xl font-medium text-white">Stunden</span>
+          </div>
+          <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
+            <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
+              {timeLeft.minutes.toString().padStart(2, '0')}
+            </span>
+            <span className="countdown-label text-base md:text-xl font-medium text-white">Minuten</span>
+          </div>
+          <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
+            <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
+              {timeLeft.seconds.toString().padStart(2, '0')}
+            </span>
+            <span className="countdown-label text-base md:text-xl font-medium text-white">Sekunden</span>
+          </div>
+        </div>
 
         <div className="hero-buttons flex flex-col md:flex-row gap-6 items-center">
-          {nextEvent && (
-            <Link 
-              href={nextEvent.id ? `/events/${nextEvent.id}` : "/events"} 
-              className="btn btn-outline"
-            >
-              <Image 
-                src="/assets/icons/i-arrow-right.svg" 
-                alt="arrow right" 
-                width={20} 
-                height={20} 
-                className="mr-2" 
-              />
-              Zum Event
-            </Link>
-          )}
+          <Link href="/events/3" className="btn btn-outline">
+            <Image 
+              src="/assets/icons/i-arrow-right.svg" 
+              alt="arrow right" 
+              width={20} 
+              height={20} 
+              className="mr-2" 
+            />
+            Zum Event
+          </Link>
           <Image 
             src="/assets/logos/logo-x-triple.svg" 
             alt="Event logo" 
