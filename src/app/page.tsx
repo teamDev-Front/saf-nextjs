@@ -5,112 +5,183 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 export default function Home() {
-  // Hardcoded target date for Taurus event
-  const targetDate = new Date("2025-06-14T10:00:00.000Z");
-  
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0
   });
-  
-  const [nextEvent, setNextEvent] = useState({
-    id: 3,
-    title: "Taurus Armwrestling Cup",
-    date: targetDate.toISOString(),
-    location: "Rock City, Offtringen"
-  });
+  const [nextEvent, setNextEvent] = useState<{
+    id: number;
+    date: string;
+    title: string;
+    location: string;
+    image_path?: string;
+  } | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Calculate time difference once on component mount
+  // Fetch the next event data
   useEffect(() => {
-    const updateCountdown = () => {
-      const now = new Date();
-      const distance = targetDate.getTime() - now.getTime();
-      
-      // Always ensure positive values for countdown
-      if (distance > 0) {
-        setTimeLeft({
-          days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-          minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-          seconds: Math.floor((distance % (1000 * 60)) / 1000)
-        });
-      } else {
-        // Keep at zero if time has passed
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+    const fetchNextEvent = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/events/next');
+        const data = await response.json();
+        
+        if (data) {
+          console.log('Next event data:', data);
+          setNextEvent(data);
+        }
+      } catch (error) {
+        console.error('Error fetching next event:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    // Update countdown immediately and then every second
+    fetchNextEvent();
+  }, []);
+
+  // Set up countdown timer
+  useEffect(() => {
+    if (!nextEvent) return;
+    
+    // Convert the event date string to a Date object
+    const eventDate = new Date(nextEvent.date);
+    console.log('Event date object:', eventDate);
+    
+    const updateCountdown = () => {
+      const now = new Date();
+      console.log('Current date:', now);
+      
+      // Calculate time difference in milliseconds
+      const distance = eventDate.getTime() - now.getTime();
+      console.log('Time difference in ms:', distance);
+      
+      if (distance <= 0) {
+        // Event has already started
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+      
+      // Calculate the time units
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+      setTimeLeft({ days, hours, minutes, seconds });
+    };
+    
+    // Update immediately then every second
     updateCountdown();
     const interval = setInterval(updateCountdown, 1000);
     
+    // Clean up interval on unmount
     return () => clearInterval(interval);
-  }, []);
+  }, [nextEvent]);
 
-  // Format date for display
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('de-DE', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
+  // Format date for display (e.g., "14.06.2025")
+  const formatEventDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Invalid date';
+    }
   };
+
+  if (loading) {
+    return (
+      <>
+        <section className="hero hero-home bg-[url('/assets/backgrounds/bg-home-triple-x-armwrestling.png')] bg-cover bg-no-repeat">
+          <div className="hero-content">
+            <h1 className="hero-large">Swiss Armsport Federation</h1>
+            <p className="text-xl">Der offizielle Schweizer Armwrestling-Verband</p>
+          </div>
+        </section>
+        {/* Rest of the home page sections remain unchanged */}
+      </>
+    );
+  }
+
+  const showCountdown = nextEvent && (nextEvent.date && new Date(nextEvent.date) > new Date());
 
   return (
     <>
       <section className="hero hero-home bg-[url('/assets/backgrounds/bg-home-triple-x-armwrestling.png')] bg-cover bg-no-repeat">
         <div className="hero-content">
           <h1 className="hero-large">Swiss Armsport Federation</h1>
-          <div className="flex flex-col items-center gap-2">
+          {nextEvent ? (
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-xl mb-0">
+                {showCountdown 
+                  ? `Countdown zum ${nextEvent.title}`
+                  : "Event hat begonnen!"}
+              </p>
+              {nextEvent.date && (
+                <p className="text-lg text-main-1 font-semibold">
+                  {formatEventDate(nextEvent.date)} in {nextEvent.location}
+                </p>
+              )}
+            </div>
+          ) : (
             <p className="text-xl">
-              Countdown zum Taurus Armwrestling Cup
+              Der offizielle Schweizer Armwrestling-Verband
             </p>
-            <p className="text-lg text-main-1 font-semibold">
-              {formatDate(targetDate)} in {nextEvent.location}
-            </p>
-          </div>
+          )}
         </div>
 
-        <div className="countdown flex gap-2 md:gap-8">
-          <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
-            <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
-              {timeLeft.days.toString().padStart(2, '0')}
-            </span>
-            <span className="countdown-label text-base md:text-xl font-medium text-white">Tagen</span>
+        {showCountdown && (
+          <div className="countdown flex gap-2 md:gap-8">
+            <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
+              <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
+                {timeLeft.days.toString().padStart(2, '0')}
+              </span>
+              <span className="countdown-label text-base md:text-xl font-medium text-white">Tagen</span>
+            </div>
+            <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
+              <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
+                {timeLeft.hours.toString().padStart(2, '0')}
+              </span>
+              <span className="countdown-label text-base md:text-xl font-medium text-white">Stunden</span>
+            </div>
+            <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
+              <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
+                {timeLeft.minutes.toString().padStart(2, '0')}
+              </span>
+              <span className="countdown-label text-base md:text-xl font-medium text-white">Minuten</span>
+            </div>
+            <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
+              <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
+                {timeLeft.seconds.toString().padStart(2, '0')}
+              </span>
+              <span className="countdown-label text-base md:text-xl font-medium text-white">Sekunden</span>
+            </div>
           </div>
-          <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
-            <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
-              {timeLeft.hours.toString().padStart(2, '0')}
-            </span>
-            <span className="countdown-label text-base md:text-xl font-medium text-white">Stunden</span>
-          </div>
-          <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
-            <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
-              {timeLeft.minutes.toString().padStart(2, '0')}
-            </span>
-            <span className="countdown-label text-base md:text-xl font-medium text-white">Minuten</span>
-          </div>
-          <div className="countdown-item w-24 md:w-40 p-3 md:p-8 bg-black bg-opacity-60 border-2 border-white flex flex-col items-center">
-            <span className="countdown-number text-3xl md:text-6xl font-bold text-white">
-              {timeLeft.seconds.toString().padStart(2, '0')}
-            </span>
-            <span className="countdown-label text-base md:text-xl font-medium text-white">Sekunden</span>
-          </div>
-        </div>
+        )}
 
         <div className="hero-buttons flex flex-col md:flex-row gap-6 items-center">
-          <Link href="/events/3" className="btn btn-outline">
-            <Image 
-              src="/assets/icons/i-arrow-right.svg" 
-              alt="arrow right" 
-              width={20} 
-              height={20} 
-              className="mr-2" 
-            />
-            Zum Event
-          </Link>
+          {nextEvent && (
+            <Link 
+              href={`/events/${nextEvent.id}`} 
+              className="btn btn-outline"
+            >
+              <Image 
+                src="/assets/icons/i-arrow-right.svg" 
+                alt="arrow right" 
+                width={20} 
+                height={20} 
+                className="mr-2" 
+              />
+              Zum Event
+            </Link>
+          )}
           <Image 
             src="/assets/logos/logo-x-triple.svg" 
             alt="Event logo" 
