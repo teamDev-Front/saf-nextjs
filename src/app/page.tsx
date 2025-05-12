@@ -52,11 +52,9 @@ export default function Home() {
     
     const updateCountdown = () => {
       const now = new Date();
-      console.log('Current date:', now);
       
       // Calculate time difference in milliseconds
       const distance = eventDate.getTime() - now.getTime();
-      console.log('Time difference in ms:', distance);
       
       if (distance <= 0) {
         // Event has already started
